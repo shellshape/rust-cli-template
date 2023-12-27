@@ -12,6 +12,9 @@ DIR=$(dirname "$0")
 sed 's/name = "rust-cli-template"/name = "'"$NAME"'"/' "$DIR/Cargo.toml" > .tmp
 mv -v .tmp "$DIR/Cargo.toml"
 
+head "-$(( $(wc -l < "$DIR/.gitignore") -3 ))" < "$DIR/.gitignore" > .tmp
+mv -v .tmp "$DIR/.gitignore"
+
 shift
 
 if [ "$1" != "--debug" ]; then
