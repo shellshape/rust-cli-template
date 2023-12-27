@@ -7,6 +7,18 @@ use figment::{
 };
 use serde::Deserialize;
 
+macro_rules! package_name {
+    () => {
+        env!("CARGO_PKG_NAME")
+    };
+}
+
+macro_rules! local_config_name {
+    ($ext:expr) => {
+        concat!(package_name!(), $ext)
+    };
+}
+
 #[derive(Deserialize)]
 pub struct Config {}
 
@@ -18,13 +30,13 @@ impl Config {
 
     pub fn parse_from_cfgdir() -> Result<Self> {
         let dirs = dirs::config_dir()
-            .map(|d| d.join("crow"))
+            .map(|d| d.join(package_name!()))
             .ok_or_else(|| anyhow::anyhow!("could not resolve project directories"))?;
 
         Ok(Figment::new()
-            .merge(Toml::file("fw.toml"))
-            .merge(Yaml::file("fw.yml"))
-            .merge(Json::file("fw.json"))
+            .merge(Toml::file(local_config_name!(".toml")))
+            .merge(Yaml::file(local_config_name!(".yaml")))
+            .merge(Json::file(local_config_name!(".json")))
             .merge(Toml::file(dirs.join("config.toml")))
             .merge(Yaml::file(dirs.join("config.yml")))
             .merge(Json::file(dirs.join("config.json")))
