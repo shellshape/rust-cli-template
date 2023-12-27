@@ -17,8 +17,10 @@ shift
 if [ "$1" != "--debug" ]; then
     echo -e "# $NAME\n\n" > "$DIR/README.md"
     rm -vrf "$DIR/LICENSE"
-    rm -vrf "$DIR/.git"
-    git -C "$DIR" init
+    if [[ "$(git -C "$DIR" remote get-url origin)" == *"shellshape/rust-cli-template"* ]]; then
+        rm -vrf "$DIR/.git"
+        git -C "$DIR" init
+    fi
     rm -vrf "$0"
 fi
 
