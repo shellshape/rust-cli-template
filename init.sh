@@ -18,8 +18,9 @@ mv -v .tmp "$DIR/.gitignore"
 shift
 
 if [ "$1" != "--debug" ]; then
-    echo -e "# $NAME\n\n" > "$DIR/README.md"
-    rm -vrf "$DIR/LICENSE"
+    sed "s/{{APP_NAME}}/$NAME/" "$DIR/README.template.md" > "$DIR/README.md"
+    sed -i "s/{{APP_NAME}}/$NAME/" "$DIR/.github/workflows/releases.yml"
+    rm -vrf "$DIR/LICENSE" "$DIR/README.template.md"
     if [[ "$(git -C "$DIR" remote get-url origin)" == *"shellshape/rust-cli-template"* ]]; then
         rm -vrf "$DIR/.git"
         git -C "$DIR" init
