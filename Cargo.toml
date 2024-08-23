@@ -11,3 +11,10 @@ clap = { version = "4", features = ["derive"] }
 dirs = "5"
 figment = { version = "0.10", features = ["json", "yaml", "toml", "env"] }
 serde = { version = "1", features = ["derive"] }
+
+[profile.release]
+strip = true
+opt-level = "s"
+codegen-units = 1
+lto = true
+panic = "unwind"
