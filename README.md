@@ -8,4 +8,12 @@ Feel free to use this template as basis for your own projects!
 
 ## Usage
 
-Simply clone this repository and run the `init.sh` script with the name of your project. This will set the specified name in the `Cargo.toml`, will delete the `LICENSE` and overwrite the `README.md`. Also, it will remove the `.git` folder and re-initialize a new repository (only if you cloned this repository; not if you used the "use template" feature from GitHub).
+First of all, you need [cargo-generate](https://github.com/cargo-generate/cargo-generate) to be installed.
+```bash
+cargo install cargo-generate
+```
+
+Now, you can simply use the following command to bootstrap your project with this template.
+```bash
+cargo generate --git https://github.com/shellshape/rust-cli-template template
+```

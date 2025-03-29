@@ -14,8 +14,8 @@ license-file = "LICENSE"
 
 anyhow = "1"
 clap = { version = "4", features = ["derive"] }
-dirs = "6"
 serde = { version = "1", features = ["derive"] }
+{% if config %}dirs = "6"{% endif %}
 {% if config %}figment = { version = "0.10", features = ["json", "yaml", "toml", "env"] }{% endif %}
 
 [profile.release]
