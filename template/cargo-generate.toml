@@ -1,0 +1,36 @@
+[template]
+cargo_generate_version = ">=0.23.0"
+exclude = [".filters"]
+
+[hooks]
+post = [".rhai/hooks/post.rhai"]
+
+[placeholders.short-description]
+type = "string"
+prompt = "Short project description"
+
+[placeholders.gh-username]
+type = "string"
+prompt = "GitHub username (or organization)"
+# The username cannot end with a hyphen, too, but
+# this requirement is not captured by the regex at the moment.
+regex = "^[A-Za-z0-9][A-Za-z0-9-]{0,38}$"
+
+[placeholders.subcommands]
+type = "bool"
+prompt = "Should your CLI have subcommands?"
+default = false
+
+[placeholders.config]
+type = "bool"
+prompt = "Should your CLI have a config file?"
+default = false
+
+[conditional.'subcommands == false']
+ignore = ["src/commands"]
+
+[conditional.'config == false']
+ignore = ["src/config.rs"]
+
+# [conditional.'crate_type == "bin"']
+# ignore = ["src/lib.rs"]

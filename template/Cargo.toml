@@ -1,16 +1,22 @@
 [package]
-name = "rust-cli-template"
+name = "{{project-name}}"
 version = "0.1.0"
-edition = "2021"
+edition = "2024"
+authors = ["{{authors}}"]
+description = "{{short-description}}"
+readme = "README.md"
+license = "MIT"
+license-file = "LICENSE"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+
 anyhow = "1"
 clap = { version = "4", features = ["derive"] }
-dirs = "5"
-figment = { version = "0.10", features = ["json", "yaml", "toml", "env"] }
+dirs = "6"
 serde = { version = "1", features = ["derive"] }
+{% if config %}figment = { version = "0.10", features = ["json", "yaml", "toml", "env"] }{% endif %}
 
 [profile.release]
 strip = true

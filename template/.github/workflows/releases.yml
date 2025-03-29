@@ -5,6 +5,7 @@ on:
   push:
     tags: ["v[0-9]+.[0-9]+.[0-9]+*"]
 
+# {% raw %}
 jobs:
   release:
     name: Build for ${{ matrix.os_name }}
@@ -61,7 +62,7 @@ jobs:
       - name: Rename Artifacts
         shell: bash
         run: |
-          APP_NAME={{APP_NAME}}
+          APP_NAME={{project-name}}
           ver=${GITHUB_REF#refs/tags/}
           ASSET_PATH=$APP_NAME-$ver-${{ matrix.target }}${{ matrix.ext }}
           mv target/${{ matrix.target }}/release/$APP_NAME $ASSET_PATH
@@ -72,3 +73,4 @@ jobs:
           draft: true
           files: ${{ env.ASSET_PATH }}
           # body_path: Changes.md
+# {% endraw %}
