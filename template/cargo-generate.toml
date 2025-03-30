@@ -1,6 +1,5 @@
 [template]
 cargo_generate_version = ">=0.23.0"
-exclude = [".filters"]
 
 [hooks]
 post = [".rhai/hooks/post.rhai"]
@@ -31,6 +30,3 @@ ignore = ["src/commands"]
 
 [conditional.'config == false']
 ignore = ["src/config.rs"]
-
-# [conditional.'crate_type == "bin"']
-# ignore = ["src/lib.rs"]
