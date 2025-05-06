@@ -1,11 +1,9 @@
-use std::{ops::Deref, path::Path};
-
 use anyhow::Result;
-use figment::{
-    providers::{Format, Json, Toml, Yaml},
-    Figment,
-};
+use figment::providers::{Format, Json, Toml, Yaml};
+use figment::Figment;
 use serde::Deserialize;
+use std::ops::Deref;
+use std::path::Path;
 
 macro_rules! package_name {
     () => {
