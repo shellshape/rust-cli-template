@@ -5,29 +5,28 @@ on:
   push:
     tags: ["v[0-9]+.[0-9]+.[0-9]+*"]
 
-# {% raw %}
 jobs:
-  release:
-    name: Build for ${{ matrix.os_name }}
-    runs-on: ${{ matrix.os }}
+  build_artifacts:
+    name: Build for {% raw %}${{ matrix.os_name }}{% endraw %}
+    runs-on: {% raw %}${{ matrix.os }}{% endraw %}
     strategy:
       fail-fast: false
       matrix:
         include:
           - os_name: FreeBSD-x86_64
-            os: ubuntu-20.04
+            os: ubuntu-latest
             target: x86_64-unknown-freebsd
           - os_name: Linux-x86_64
-            os: ubuntu-20.04
+            os: ubuntu-latest
             target: x86_64-unknown-linux-musl
           - os_name: Linux-aarch64
-            os: ubuntu-20.04
+            os: ubuntu-latest
             target: aarch64-unknown-linux-musl
           - os_name: Linux-arm
-            os: ubuntu-20.04
+            os: ubuntu-latest
             target: arm-unknown-linux-musleabi
           - os_name: Linux-riscv64
-            os: ubuntu-20.04
+            os: ubuntu-latest
             target: riscv64gc-unknown-linux-gnu
           - os_name: Windows-aarch64
             os: windows-latest
@@ -55,22 +54,42 @@ jobs:
         uses: houseabsolute/actions-rust-cross@v0
         with:
           command: "build"
-          target: ${{ matrix.target }}
+          target: {% raw %}${{ matrix.target }}{% endraw %}
           toolchain: stable
           args: "--locked --release"
           strip: true
       - name: Rename Artifacts
         shell: bash
         run: |
-          APP_NAME={{project-name}}
+          APP_NAME={{ project-name }}
           ver=${GITHUB_REF#refs/tags/}
-          ASSET_PATH=$APP_NAME-$ver-${{ matrix.target }}${{ matrix.ext }}
-          mv target/${{ matrix.target }}/release/$APP_NAME $ASSET_PATH
+          ASSET_PATH=$APP_NAME-$ver-{% raw %}${{ matrix.target }}${{ matrix.ext }}{% endraw %}
+          mv target/{% raw %}${{ matrix.target }}{% endraw %}/release/$APP_NAME $ASSET_PATH
           echo "ASSET_PATH=$ASSET_PATH" >> $GITHUB_ENV
-      - name: Publish GitHub release
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: {% raw %}${{ env.ASSET_PATH }}{% endraw %}
+          path: {% raw %}${{ env.ASSET_PATH }}{% endraw %}
+
+  create_release:
+    name: Create GitHub Release
+    needs: build_artifacts
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: ./artifacts
+
+      - name: List downloaded files (debug)
+        run: ls -R ./artifacts
+
+      - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
+          files: ./artifacts/**/*
           draft: true
-          files: ${{ env.ASSET_PATH }}
-          # body_path: Changes.md
-# {% endraw %}
+        env:
+          GITHUB_TOKEN: {% raw %}${{ secrets.GITHUB_TOKEN }}{% endraw %}
